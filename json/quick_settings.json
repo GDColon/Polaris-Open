@@ -1,0 +1,44 @@
+{
+
+    "home": [
+        { "groupName": "Quick settings" },
+        { "emoji": "✨", "name": "General", "folder": "general" },
+        { "emoji": "🎁", "name": "Levelling", "folder": "level" },
+        { "emoji": "📊", "name": "Rank and Leaderboard", "folder": "rank" }
+    ],
+
+    "general": [
+        { "emoji": "⬅️", "name": "Back", "folder": "home", "groupName": "General settings" },
+        { "db": "enabled", "name": "Enable XP", "desc": "Allows members to gain XP", "tip": "Disabling will prevent anyone from gaining XP, but will not reset or remove existing XP." },
+        { "db": "gain.min", "name": "Min XP", "desc": "Minimum amount of XP to earn per message", "tip": "Each message gives a random amount of XP, this changes the lower bound" },
+        { "db": "gain.max", "name": "Max XP", "desc": "Maximum amount of XP to earn per message", "tip": "Each message gives a random amount of XP, this changes the upper bound" },
+        { "db": "gain.time", "name": "XP Cooldown", "desc": "Members must wait this many seconds before they can gain XP again", "tip": "Messages sent during the cooldown period will not gain", "str": "# seconds" },
+        { "db": "maxLevel", "name": "Level cap", "desc": "The highest level members can reach", "tip": "Members can still gain XP past this, unless you reward a role with a 0x multiplier" }
+    ],
+
+    "level": [
+        { "emoji": "⬅️", "name": "Back", "folder": "home", "groupName": "Levelling settings" },
+        { "db": "levelUp.enabled", "name": "Enable level up message", "desc": "Sends a message or DM when a member levels up" },
+        { "db": "levelUp.multiple", "name": "Level up multiple", "desc": "Only sends the level up message when reaching a multiple of this number", "tip": "A multiple of 5 sends on levels 5, 10, 15, 20, 25, ...", "str": "Every # level(s)" },
+        { "db": "levelUp.multipleUntil", "name": "Level up multiple cap", "desc": "After reaching this level, the level up multiple is no longer used and a message is posted on every level reached", "tip": "Set to 0 to disable", "str": "Level #", "zeroText": "Disabled" },
+        { "space": true },
+        { "db": "rewardSyncing.noManual", "name": "Manual sync", "invert": true, "desc": "Allows members to manually sync their roles whenever they want, via /sync" },
+        { "db": "rewardSyncing.noWarning", "name": "Sync warning", "invert": true, "desc": "Show a warning message in /rank when a member's roles aren't synced properly" }
+    ],
+
+    "rank": [
+        { "emoji": "⬅️", "name": "Back", "folder": "home", "groupName": "Rank and Leaderboard settings" },
+        { "db": "rankCard.disabled", "name": "Enable /rank", "invert": true, "desc": "Enables /rank cards", "tip": "Disabling this also hides most info in /calculate" },
+        { "db": "rankCard.ephemeral", "name": "Hide /rank messages", "desc": "Forces /rank messages to be ephemeral, meaning only the member who typed the commmand can see it" },
+        { "db": "rankCard.hideCooldown", "name": "Hide cooldown", "desc": "Hides the amount of time until XP can be gained again " },
+        { "db": "hideMultipliers", "name": "Hide multipliers", "desc": "Hides which roles have multipliers (except 0x)" },
+        { "db": "rankCard.relativeLevel", "name": "Show relative XP", "desc": "Changes the 'next level' section of /rank to start at 0 and only include XP from that level", "tip": "e.g. If level 10 requires 2000 XP and level 11 requires 3000, it will display \"500/1000 XP until level 11\" for a member with 2500 XP" },
+        { "space": true },
+        { "db": "leaderboard.disabled", "name": "Enable leaderboard", "invert": true, "desc": "Enables the server XP leaderboard" },
+        { "db": "leaderboard.private", "name": "Private leaderboard", "desc": "Restricts the online leaderboard so only server members can access it (requires logging in)" },
+        { "db": "leaderboard.hideRoles", "name": "Hide reward roles", "desc": "Hides the list of reward roles on the online leaderboard" },
+        { "db": "leaderboard.ephemeral", "name": "Hide /top messages", "desc": "Forces /top messages to be ephemeral, meaning only the member who typed the commmand can see it" },
+        { "db": "leaderboard.minLevel", "name": "Minimum leaderboard level", "desc": "Restricts the leaderboard to only show members above this level", "tip": "Set to 0 to disable", "zeroText": "None" },
+        { "db": "leaderboard.maxEntries", "name": "Max leaderboard entries", "desc": "Only shows the top X members on the leaderboard", "tip": "Set to 0 to display everyone", "zeroText": "Unlimited" }
+    ]
+}

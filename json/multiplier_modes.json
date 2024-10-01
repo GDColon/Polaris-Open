@@ -1,0 +1,17 @@
+{
+    "rolePriority": {
+        "largest": "Role with highest multiplier",
+        "smallest": "Role with lowest multiplier",
+        "highest": "Highest role",
+        "add": "All multipliers summed, n-1 each",
+        "combine": "All multipliers combined"
+    },
+
+    "channelStacking": {
+        "multiply": "Multipliers combined",
+        "add": "Multipliers summed, n-1 each",
+        "largest": "Largest between role and channel",
+        "channel": "Channel multiplier priority",
+        "role": "Role multiplier priority"
+    }
+}

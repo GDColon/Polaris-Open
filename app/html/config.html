@@ -1,0 +1,1920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="/css/polaris.css?v=3" type="text/css" rel="stylesheet">
+    <link rel="icon" href="/assets/polaris.svg">
+    <title>Polaris</title>
+
+    <meta property="og:title" content="Polaris">
+    <meta property="og:description" content="An open-source XP bot">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#00ff80">
+    <meta name="twitter:card" content="summary">
+    <meta name="robots" content="noindex">
+</head>
+<body>
+
+    <h2 style="margin-top: 75px; width: 100%; position: absolute;" class="middleflex" id="loading">Loading...</h2>
+
+    <div id="everything" style="display: none; width: 1600px">
+
+    <div id="sidebar">
+        <div tabindex="0" category="server" class="category" title="Info on each tab, plus some general server details.">
+            <img class="serverIcon" style="border-radius: 420px">
+            <p>Home</p>
+        </div>
+
+        <div tabindex="0" category="xp" class="category" title="General levelling settings, such as XP per message and level scaling.">
+            <img src="/assets/categories/xp.svg">
+            <p>XP gain</p>
+        </div>
+
+        <div tabindex="0" category="rewardroles" class="category" title="Automatically grant roles when certain levels are reached.">
+            <img src="/assets/categories/rewardroles.svg">
+            <p>Reward roles</p>
+        </div>
+
+        <div tabindex="0" category="levelup" class="category" title="Send a customizable message when a member levels up or reaches a milestone.">
+            <img src="/assets/categories/levelup.svg">
+            <p>Level up message</p>
+        </div>
+
+        <div tabindex="0" category="multipliers" class="category" title="Make certain roles/channels grant extra XP, or none at all.">
+            <img src="/assets/categories/multipliers.svg">
+            <p>Multipliers</p>
+        </div>
+
+        <div tabindex="0" category="rankcard" class="category" title="Tweak the info and details that should be displayed on rank cards.">
+            <img src="/assets/categories/rankcard.svg">
+            <p>Rank card</p>
+        </div>
+
+        <div tabindex="0" category="leaderboard" class="category" title="Toggle the server's leaderboard, or tweak privacy settings.">
+            <img src="/assets/categories/leaderboard.svg">
+            <p>Leaderboard</p>
+        </div>
+
+        <div tabindex="0" category="data" class="category" title="Import data from other bots, or download/clear existing settings.">
+            <img src="/assets/categories/data.svg">
+            <p>Data</p>
+        </div>
+
+        <div tabindex="0" category="advanced" class="category" title="Some extra advanced/experimental settings for finer customization.">
+            <img src="/assets/categories/advanced.svg">
+            <p>Advanced</p>
+        </div>
+    </div>
+
+    <div id="unsavedWarning">
+        <div class="unsavedBox">
+            <p>All done?</p>
+            <button style="background-color: var(--emojigreen)" id="saveChanges">Save</button>
+        </div>
+    </div>
+
+    <div class="configboxes" tab="server" style="display: none" id="serverInfo">
+        <div class="settingBox box fulllength" style="padding: 15px 20px; position: relative">
+            <div class="centerflex">
+                <img class="serverIcon" style="border-radius: 420px; height: 75px">
+                <div style="margin-left: 18px; overflow: hidden;">
+                    <h1 class="serverName" style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap; margin-bottom: 0px"></h1>
+                    <p class="serverMembers" style="margin-top: 0px"></p>
+                </div>
+            </div>
+            <div class="middleflex" style="position: absolute; top: 0px; right: 30px; height: 100%">
+                <a tabindex=-1 href="/servers">
+                    <button style="font-size: 24px; height: 50px; width: 200px; margin-right: 25px; background-color: var(--emojiblue)">Change Server</button>
+                </a>
+
+                <a class="leaderboardLink" tabindex=-1 target="_blank" id="mainlbbutton">
+                    <button style="font-size: 24px; height: 50px; width: 200px; background-color: var(--emojipurple)">Leaderboard</button>
+                </a>
+            </div>
+        </div>
+
+        <div class="settingBox box categoryBox canfocus" tabindex=0>
+            <div class="centerflex">
+                <img cat="icon">
+                <div style="overflow: hidden">
+                    <h2 cat="name"></h2>
+                    <p cat="info" class="details" style="height: 56px"></p>
+                    <p cat="extra" style="white-space: nowrap"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="configboxes" tab="xp" style="display: none">
+        <div class="settingBox box fulllength">
+            <h1>XP Gain</h1>
+            <p>Whenever a member sends a message, they gain a random amount of XP (experience points) and trigger a short cooldown. When the cooldown finishes, they can gain more XP. Congratulations! You just learned how XP bots work.</p>
+
+            <h2>Enable XP</h2>
+            <p class="details">When enabled, members will be able to gain XP. This is the whole point of the bot.</p>
+            <label style="margin-top: 5px"; class="slider">
+                <input db="enabled" id="enableLevelUp" type="checkbox" saveName="db">
+                <span class="sliderspan"></span>
+            </label>
+        </div>
+
+        <div class="settingBox box fulllength">
+            <h1>Basic Settings</h1>
+            <p>Customize the amount of XP earned, as well as how often it can be gained. Easy enough.</p>
+
+            <div class="simpleflex">
+                <div class="sideoption">
+                    <h2>XP per message</h2>
+                    <p class="details">Amount is randomly picked between the min and max value</p>
+                    <div class="field">
+                        <div class="centerflex spacedflex">
+                            <p>Between</p>
+                            <input updatecurve="true" id="num_min" style="width: 75px" type="number" min="0" max="5000" default="50" db="gain.min" saveName="db">
+                            <p> and </p>
+                            <input updatecurve="true" id="num_max" style="width: 75px" type="number" min="0" max="5000" default="50" db="gain.max" saveName="db">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sideoptions">
+                    <h2>Cooldown</h2>
+                    <p class="details">Members must wait this many seconds before they can gain XP again</p>
+                    <div class="field">
+                        <div class="centerflex spacedflex">
+                            <input updatecurve="true" id="num_time" style="width: 100px" type="number" decimals="4" min="0" max="31536000" default="60" db="gain.time" saveName="db">
+                            <p>seconds</p>
+                            <p id="cooldownunit" style="opacity: 70%; display: none"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="settingBox box fulllength">
+            <h1>Level Scaling</h1>
+            <p>By gaining enough XP, members can level up and earn special roles or bragging rights.
+                The amount of XP required scales with each level - early levels only need a couple thousand points but later levels need millions.</p>
+            
+            <p>You can adjust the level scaling to change how many more points are required with each level.
+                A smaller curve makes it easier to level up and a larger curve makes it much more difficult.</p>
+
+
+            <div class="simpleflex">
+                <div class="sideoption">
+                    <h2 id="curveStuff">Curve formula</h2>
+                    <p class="details">Cubic function that determines how much XP is needed for each level</p>
+                    <div class="field">
+                        <div class="centerflex curvefield">
+                            <input updatecurve="true" id="num_curve3" style="width: 65px" type="number" min="0" max="100" decimals="10" default="0" db="curve.3" saveName="db">
+                            <p>x<sup>3</sup> &nbsp; &nbsp; + </p>
+                            <input updatecurve="true" id="num_curve2" style="width: 65px" type="number" min="0" max="10000" decimals="10" default="0" db="curve.2" saveName="db">
+                            <p>x<sup>2</sup> &nbsp; &nbsp; + </p>
+                            <input updatecurve="true" id="num_curve1" style="width: 65px" type="number" min="0" max="100000" decimals="10" default="0" db="curve.1" saveName="db">
+                            <p>x</p>
+                        </div>
+                    </div>
+                    <p>Difficulty rating: <b id="scaleDifficulty" style="color: aqua"></b></p>
+                </div>
+
+                <div class="sideoption">
+                    <h2>Rounding</h2>
+                    <p class="details">Rounds the required XP to a nicer number, e.g. 791 XP -> 800 XP</p>
+                    <div class="centerflex spacedflex">
+                        <p>Round to nearest</p>
+                        <input updatecurve="true" id="num_round" style="width: 80px" type="number" min="1" max="1000" default="1" db="rounding" saveName="db">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="simpleflex">
+                <div>
+                    <h2 style="margin-bottom: 12px">Preview</h2>
+                    <div class="simpleflex flexTable" id="curvePreview"></div>
+    
+                    <button style="margin-top: 16px; width: 140px" id="showMoreCurveInfo">More info</button>
+                </div>
+
+                <div style="margin-left: 40px; margin-top: 68px">
+                    <div id="xpGraph" class="desmos"></div>
+                    <p class="details" id="desmosJumpscare" style="font-size: 10px; opacity: 25%">desmos jumpscare</p>
+                </div>
+            </div>
+
+            <div id="fullPreviewSection" style="display: none">
+                <h2 style="margin-bottom: 12px">Full Table</h2>
+                <div class="simpleflex flexTable" id="fullCurvePreview"></div>
+
+                <button style="margin-top: 16px; width: 140px; background-color: var(--emojipurple)" onclick="$('#fullPreviewSection').hide()">Hide</button>
+            </div>
+        </div>
+
+        <div class="settingBox box fulllength">
+            <h1>Presets</h1>
+            <p>Balancing is hard. Here's some presets to pick from!</p>
+
+            <div class="simpleflex">
+                <div style="width: 750px">
+                    <h2>View preset</h2>
+                    <p class="details">No settings will be changed until you click "apply"</p>
+                    <select id="curvePresets"></select>
+
+                    <p id="presetDesc" style="margin-bottom: 8px; font-style: italic;">Curve description</p>
+                    <div class="curveInfo">
+                        <p>- <b>Curve:</b> <span id="presetCurve"></span></p>
+                        <p>- <b>Difficulty:</b> <span id="presetDifficulty"></span></p>
+                        <p>- <b>Rounding:</b> <span id="presetRound"></span></p>
+                        <p>- <b>XP per message:</b> <span id="presetXP"></span></p>
+                    </div>
+                    <button id="applyPreset" style="margin-top: 12px;">Apply Preset</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="configboxes" tab="rewardroles" style="display: none">
+        <div class="settingBox box fulllength">
+            <h1>Reward Roles</h1>
+            <p style="margin-bottom: 3px">Automatically give roles to members when they reach certain levels. For free.</p>
+            <p class="details">Imagine if I tried to capitalize off a couple extra lines of code, haha that would be absolutely crazy</p>
+
+            <h2>Add role</h2>
+
+            <div style="margin-top:10px" class="centerflex spacedflex">
+                <p>Reward</p>
+                <select id="rewardRoleSelect"></select>
+                <p>at level</p>
+                <input id="rewardLevel" type="number" style="width: 90px" min="1" max="1000">
+            </div>
+
+            <div class="centerflex spacedflex">
+                <p>Remove this role when a higher role is obtained</p>
+                <label style="margin-top: 5px"; class="slider">
+                    <input id="rewardKeep" type="checkbox" checked>
+                    <span class="sliderspan"></span>
+                </label>
+            </div>
+
+            <div class="centerflex spacedflex excludeMode">
+                <p>Advanced: Exclude this role when syncing roles</p>
+                <label style="margin-top: 5px"; class="slider">
+                    <input id="rewardExclude" type="checkbox">
+                    <span class="sliderspan"></span>
+                </label>
+            </div>
+
+            <button style="margin-top: 10px" id="addRewardRole">Add</button>
+
+            <h2 style="margin-top: 50px; margin-bottom: 15px">Current rewards (<span id="rewardCount">0</span>)</h2>
+
+            <div class="simpleflex flexTable" id="rewards"></div>
+        </div>
+
+        <div class="settingBox box fulllength">
+            <h1>Reward Syncing</h1>
+            <p>By default, the bot will automatically sync level roles by adding missing ones and removing incorrect ones. Feel free to tweak this behaviour a little.</p>
+
+            <div class="simpleflex">
+                <div class="sideoption">
+                    <h2>Automatic syncing</h2>
+                    <p class="details">Choose when the bot should automatically sync level roles</p>
+                    <select db="rewardSyncing.sync" saveName="db">
+                        <option value="level">On level up</option>
+                        <option value="xp">On XP gain (slower)</option>
+                        <option value="never">Never</option>
+                    </select>
+                </div>
+
+                <div class="sideoptions">
+                    <h2>Manual syncing</h2>
+                    <p class="details">If members should be able to manually sync their roles whenever they want</p>
+
+                    <label style="margin-top: 5px"; class="slider">
+                        <input type="checkbox" tabindex="0" db="rewardSyncing.noManual" invert="true" saveName="db">
+                        <span class="sliderspan"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="simpleflex" style="margin-top: 40px">
+                <div class="sideoption">
+                    <h2>Show sync warning</h2>
+                    <p class="details">Displays a warning message in /rank if a member's roles aren't synced properly</p>
+
+                    <label style="margin-top: 5px"; class="slider">
+                        <input type="checkbox" tabindex="0" db="rewardSyncing.noWarning" invert="true" saveName="db">
+                        <span class="sliderspan"></span>
+                    </label>
+                </div>
+
+                <div class="sideoptions">
+                    <h2>Advanced: Exclude roles</h2>
+                    <p class="details">Prevent certain roles from being re-added or removed when syncing.</p>
+        
+                    <label style="margin-top: 5px"; class="slider">
+                        <input type="checkbox" tabindex="0" id="excludeRewardToggle">
+                        <span class="sliderspan"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="configboxes" tab="levelup" style="display: none">
+        <div class="settingBox box fulllength">
+            <h1>Level up message</h1>
+            <p>Send an automatic message in the chat when a member levels up. How fun!</p>
+
+            <h2>Enable message</h2>
+            <p class="details">When enabled, a message or DM will be sent whenever anyone levels up.</p>
+            <label style="margin-top: 5px"; class="slider">
+                <input db="levelUp.enabled" type="checkbox" saveName="db" onchange="$('.ifmessageenabled').toggle($(this).prop('checked'))">
+                <span class="sliderspan"></span>
+            </label>
+        </div>
+        <div class="settingBreak"></div>
+
+        <div class="settingBox box fulllength ifmessageenabled">
+
+            <div id="regularMessage">
+                <h1>Message</h1>                  
+                <p>The message to send upon levelling up.</p>
+                <textarea class="lvlTextbox" id="lvlUpMessage" style="width: 800px" placeholder="(no message)" saveName="levelUp.message"></textarea>
+            </div>
+
+            <div id="embedMessage">
+                <h1>Embed</h1>                  
+                <p>The embedded message to send upon levelling up.</p>
+                <p><b>Step 1: </b> <a target="_blank" href="https://discohook.org/?data=eyJtZXNzYWdlcyI6W3siZGF0YSI6eyJjb250ZW50IjpudWxsLCJlbWJlZHMiOlt7InRpdGxlIjoi4pyoIExldmVsIHVwISIsImRlc2NyaXB0aW9uIjoiKipbW1VTRVJOQU1FXV0qKiBoYXMgcmVhY2hlZCBsZXZlbCAqKltbTEVWRUxdXSoqISBDb25ncmF0dWxhdGlvbnMhIiwiY29sb3IiOjE2NzQ0NDQ4LCJmb290ZXIiOnsidGV4dCI6IlRoZXkgbm93IGhhdmUgW1tYUF1dIFhQIn19XSwiYXR0YWNobWVudHMiOltdfX1dfQ">Generate an embed here!</a></p>
+                <p><b>Step 2: </b> Open the JSON data by pressing 'JSON Data Editor' at the bottom of the site</p>
+                <p><b>Step 3: </b> Copy the text and paste it in the box below</p>
+                <p class="details" style="margin-bottom: 15px">*All variables (e.g. [[USERNAME]]) still work in embeds!</p>
+                <textarea class="lvlTextbox codeArea" id="lvlUpEmbed" style="width: 800px" placeholder="(no embed)" saveName="levelUp.message"></textarea>
+                <p id="invalidLevelUpEmbed" class="red" style="display: none"><b>Warning: </b>Invalid embed JSON data! This embed will not work.</p>
+            </div>
+
+            <div class="simpleflex">
+                <div class="sideoption"> 
+                    <h2>Variables</h2>
+                    <p class="details">Spice up your message with dynamic variables!</p>
+
+                    <div id="lvlUpMessageVariables" class="varList">
+                        <select>
+                            <option value="x" selected disabled>XP</option>
+                            <option value="[[LEVEL]]">Level (e.g. 10)</option>
+                            <option value="[[OLD_LEVEL]]">Previous level (e.g. 9)</option>
+                            <option value="[[XP]]">XP (e.g. 10,000)</option>
+                            <option value="[[NEXT_LEVEL]]">Next level (e.g. 11)</option>
+                            <option value="[[NEXT_XP]]">XP to next level (e.g. 1,000)</option>
+                        </select>
+        
+                        <select>
+                            <option value="x" selected disabled>Member</option>
+                            <option value="[[@]]">@mention (e.g. @Polaris)</option>
+                            <option value="[[DISPLAYNAME]]">Display Name (e.g. Polaris)</option>
+                            <option value="[[USERNAME]]">Username (e.g. polaris)</option>
+                            <option value="[[ID]]">ID (e.g. 98341916...)</option>
+                            <option value="[[NICKNAME]]">Nickname</option>
+                            <option value="[[AVATAR]]">Avatar URL</option>
+                        </select>
+        
+                        <select>
+                            <option value="x" selected disabled>Server</option>
+                            <option value="[[SERVER]]">Server name</option>
+                            <option value="[[SERVER_ICON]]">Server icon URL</option>
+                            <option value="[[SERVER_ID]]">Server ID</option>
+                            <option value="[[CHANNEL]]">Channel tag (e.g. #channel)</option>
+                            <option value="[[CHANNEL_NAME]]">Channel name (e.g. channel)</option>
+                            <option value="[[CHANNEL_ID]]">Channel ID</option>
+                        </select>
+        
+                        <select>
+                            <option value="x" selected disabled>Advanced</option>
+                            <!-- <option value="[[DISCRIM]]">Account Discriminator (e.g. 6880)</option> -->
+                            <option value="[[LEVEL]][[NTH]]">Nth (1st, 2nd, 3rd, etc)</option>
+                            <option value="<t:[[TIMESTAMP]]>">Timestamp</option>
+                            <option value="[[EMBEDTIMESTAMP]]">Embed Timestamp</option>
+                            <option value="[[CHOOSE | Message 1 | Message 2 | Message 3... ]]">Random pick</option>
+                            <option value="[[CHOOSE | Normal message | <2> 2x as likely to appear | <0.5> 0.5x as likely to appear... ]]">Random pick (weighted)</option>
+                            <option value="[[IFLEVEL = 10 | Only appears on level 10 (can also use >, >=, <, <=, !=, or /) ]]">Level condition</option>
+                            <option value="[[IFROLE | Only appears upon gaining a role. You now have [[ROLE]] / [[ROLE_NAME]]! ]]">Reward role condition</option>
+                        </select>
+
+                        <select style="margin-top: 7px; display: none" id="roleVariables">
+                            <option value="x" selected disabled>Role</option>
+                            <option value="[[ROLE]]">Reward role (e.g. @Legendary)</option>
+                            <option value="[[ROLE_NAME]]">Reward role name (e.g. Legendary)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="sideoption"> 
+                    <h2>Example</h2>
+                    <p class="exampleP details" id="exampleInfo">Send a test message to see if everything is working correctly</p>
+                    <p class="details" id="sendingExample" style="display: none">Sending...</p>
+                    <p class="exampleP details" id="exampleSent" style="opacity: 100%; display: none; color: lime">Example sent! Check your DMs.</p>
+                    <p class="exampleP details" id="exampleError" style="opacity: 100%; display: none; color: red">Error sending example! Are your DMs enabled?</p>
+                    <div style="display: flex" class="spacedflex">
+                        <button id="sendExample" style="background-color: var(--emojipurple)">Send example in DMs</button>
+                        <input id="exampleLevel" type="number" min="1" max="1000" placeholder="Level" style="height: 37px; width: 70px">
+                    </div>
+                </div>
+            </div>
+
+            <div class="simpleflex" style="margin-top: 15px">
+                <div class="sideoption"> 
+                    <h2>Channel</h2>
+                    <p class="details">Which channel should the message be sent in?</p>
+                    <select id="lvlMessageSelect" saveName="levelUp.channel">
+                        <option value="current">Current channel</option>
+                        <option value="dm">Send in DMs</option>
+                    </select>
+                </div>
+
+                <div class="sideoption"> 
+                    <h2>Embed mode</h2>
+                    <p class="details">Send a fancy embed instead of a normal message (advanced!)</p>
+                    <label style="margin-top: 5px"; class="slider">
+                        <input id="toggleLvlUpEmbed" type="checkbox" tabindex="0" db="levelUp.embed" saveName="db">
+                        <span class="sliderspan"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="settingBreak"></div>
+        
+        <div class="settingBox box fulllength ifmessageenabled">
+            <h1>Interval</h1>
+            <p class=>How often the message should be sent (e.g. every 3rd level)</p>
+
+            <div class="simpleflex" style="margin-bottom: 25px">
+                <div class="sideoption">
+                    <h2>Multiple</h2>
+                    <p class="details">Level up messages will only send when reaching a multiple of this number<br>(e.g. a multiple of 5 will send on levels 5, 10, 15, 20, 25, ...)</p>
+                    <div class="field">
+                        <div class="centerflex spacedflex">
+                            <p>Every</p>
+                            <input id="num_levelinterval" style="width: 100px" type="number" min="1" max="1000" default="1" db="levelUp.multiple" saveName="db">
+                            <p>level(s)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sideoptions" style="width: 600px">
+                    <h2>Use multiple until</h2>
+                    <p class="details">Once a member reaches this level, the multiple is no longer used and a level up message will be posted for every level (set to 0 to disable)</p>
+                    <div class="field">
+                        <div class="centerflex spacedflex">
+                            <p>Level</p>
+                            <input id="num_levelinterval" style="width: 100px" type="number" min="0" max="1000" default="0" db="levelUp.multipleUntil" saveName="db">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sideoption"> 
+                <h2>Reward roles only</h2>
+                <p class="details">Only send the level up message when obtaining a new reward role</p>
+                <label style="margin-top: 5px"; class="slider">
+                    <input type="checkbox" tabindex="0" db="levelUp.rewardRolesOnly" saveName="db" onchange="$('#roleVariables').toggle($(this).prop('checked'))">
+                    <span class="sliderspan"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="configboxes" tab="multipliers" style="display: none">
+        <div class="settingBox box fulllength" style="padding-bottom: 15px">
+            <h1>Multipliers</h1>
+            <p style="margin-bottom: 3px">Make certain roles/channels grant extra XP, or none at all.</p>
+            <p class="details">2x multiplier grants double XP, 0x multiplier disables XP gain, etc</p>
+        </div>
+        <div class="settingBreak"></div>
+
+        <div class="settingBox box">
+            <h2>Add a role multiplier</h2>
+            <p class="details" style="padding-right: 30px">Members with a multiplier role will have their XP gain from messages multiplied by the value set below</p>
+
+            <div style="margin-top:10px" class="centerflex spacedflex">
+                <select id="roleMultiplierSelect"></select>
+                <p>grants</p>
+                <input id="roleMultiplierAmount" type="number" decimals="4" style="width: 70px; margin-right: 2px" min="0" max="100">
+                <p>⨯ XP</p>
+            </div>
+
+            <button style="margin-top: 10px" id="addRoleMultiplier">Add</button>
+
+            <h2 style="margin-top: 50px; margin-bottom: 15px">Role multipliers (<span id="roleMultiplierCount">0</span>)</h2>
+
+            <div class="simpleflex flexTable" id="roleMultipliers"></div>
+
+            <h2 style="margin-top: 40px">Role priority</h2>
+            <p class="details">If a member has multiple roles, which one should take priority?<br>(0x multipliers will always prioritized regardless of this setting)</p>
+            <select db="multipliers.rolePriority" id="rolePriority" desc="role" class="multiplierSelect" saveName="db">
+                <option value="largest">Largest multiplier</option>
+                <option value="smallest">Smallest multiplier</option>
+                <option value="highest">Highest role</option>
+                <option value="add">Add them together</option>
+                <option value="combine">COMBINE THEM ALL!!! (bad idea)</option>
+            </select>
+            <p class="details multiplierDescription" id="roleMultiplierDescription">If you have 2.0x and 3.0x role multipliers, they will be multiplied to 6.0x. Scales absurdly fast</p>
+        </div>
+
+        <div class="settingBox box">
+            <h2>Add a channel multiplier</h2>
+            <p class="details">Category multipliers will only apply to channels that do not have a more specific multiplier set. Threads without a multiplier will default to their parent channel.</p>
+
+            <div style="margin-top:10px" class="centerflex spacedflex">
+                <select id="channelMultiplierSelect"></select>
+                <p>grants</p>
+                <input id="channelMultiplierAmount" type="number" decimals="4" style="width: 70px; margin-right: 2px" min="0" max="100">
+                <p>⨯ XP</p>
+            </div>
+
+            <button style="background-color: var(--emojipurple); margin-top: 10px" id="addChannelMultiplier">Add</button>
+
+            <h2 style="margin-top: 50px; margin-bottom: 15px">Channel multipliers (<span id="channelMultiplierCount">0</span>)</h2>
+
+            <div class="simpleflex flexTable" id="channelMultipliers"></div>
+
+            <h2 style="margin-top: 40px">Stacking</h2>
+            <p class="details">What should be done if a member also has a multiplier role?<br>(XP gain will always be if either multiplier is 0x)</p>
+            <select db="multipliers.channelStacking" id="channelStacking" desc="channel" class="multiplierSelect" saveName="db">
+                <option value="multiply">Multiply together with role</option>
+                <option value="add">Add together with role</option>
+                <option value="largest">Use the higher multiplier</option>
+                <option value="channel">Always use the channel multiplier</option>
+                <option value="role">Always use the role multiplier</option>
+            </select>
+            <p class="details multiplierDescription" id="channelMultiplierDescription">If you have 2.0x and 3.0x role multipliers, they will be multiplied to 6.0x. Scales absurdly fast</p>
+        </div>
+
+    </div>
+
+    <div class="configboxes" tab="rankcard" style="display: none">
+        <div class="settingBox box fulllength">
+            <h1>Rank Card</h1>
+            <p>Tweak the details shown on rank cards.<br>Some settings may also apply to the online leaderboard.</p>
+            <a class="leaderboardLink" tabindex=-1 target="_blank"><button style="background-color: var(--emojipurple)">Visit leaderboard</button></a>
+
+            <h2>Enable rank cards</h2>
+            <p class="details">Allows members to check their XP with /rank. Disabling this will also hide most info in /calculate.</p>
+            <label style="margin-top: 5px"; class="slider">
+                <input type="checkbox" tabindex="0" db="rankCard.disabled" invert="true" saveName="db" onchange="$('.ifrankenabled').toggle($(this).prop('checked'))">
+                <span class="sliderspan"></span>
+            </label>
+        </div>
+        <div class="settingBreak"></div>
+        
+        <div class="settingBox box ifrankenabled">
+            <h2>Hide cooldown</h2>
+            <p class="details">Prevents members from viewing the amount of time until they can gain XP again.</p>
+            <label style="margin-top: 5px"; class="slider">
+                <input type="checkbox" tabindex="0" db="rankCard.hideCooldown" saveName="db">
+                <span class="sliderspan"></span>
+            </label>
+        </div>
+
+        <div class="settingBox box">
+            <h2>Hide multipliers</h2>
+            <p class="details">Prevents members from viewing which roles have multipliers. (except 0x)</p>
+            <label style="margin-top: 5px"; class="slider">
+                <input type="checkbox" tabindex="0" db="hideMultipliers" saveName="db">
+                <span class="sliderspan"></span>
+            </label>
+        </div>
+
+        <div class="settingBox box ifrankenabled" style="height: 171px">
+            <h2>Force hidden</h2>
+            <p class="details">Forces usages of /rank to always be hidden (ephemeral), meaning that only the member who typed the command can see the message.<br></p>
+            <label style="margin-top: 5px"; class="slider">
+                <input type="checkbox" tabindex="0" db="rankCard.ephemeral" saveName="db">
+                <span class="sliderspan"></span>
+            </label>
+        </div>
+
+        <div class="settingBox box ifrankenabled" style="height: 171px">
+            <h2>Relative XP</h2>
+            <p class="details">Changes the 'next level' section of /rank to start at 0 and only include XP from that level. e.g. If level 10 requires 2000 XP and level 11 requires 3000, it will display "500/1000 XP until level 11" for a member with 2500 XP.</p>
+            <label style="margin-top: 5px"; class="slider">
+                <input type="checkbox" tabindex="0" db="rankCard.relativeLevel" saveName="db">
+                <span class="sliderspan"></span>
+            </label>
+        </div>
+
+        <div class="settingBox box ifrankenabled">
+            <h2>Rank card customization</h2>
+            <p class="details">Not my problem anymore lol</p>
+        </div>
+
+    </div>
+
+    <div class="configboxes" tab="leaderboard" style="display: none">
+        <div class="settingBox box fulllength">
+            <h1>Leaderboard</h1>
+            <p>Tweak some leaderboard-related settings. Good for privacy.</p>
+            <a class="leaderboardLink" tabindex=-1 target="_blank"><button style="background-color: var(--emojipurple)">Visit leaderboard</button></a>
+
+            <h2>Enable leaderboard</h2>
+            <p class="details">Allows members to view and compare their ranks on a big leaderboard.</p>
+            <label style="margin-top: 5px"; class="slider">
+                <input type="checkbox" tabindex="0" db="leaderboard.disabled" invert="true" saveName="db" onchange="$('.iflbenabled').toggle($(this).prop('checked'))">
+                <span class="sliderspan"></span>
+            </label>
+        </div>
+        <div class="settingBreak"></div>
+
+        <div class="settingBox box ifrankenabled">
+            <h2>Force hidden</h2>
+            <p class="details">Forces usages of /top to always be hidden (ephemeral).<br></p>
+            <label style="margin-top: 5px"; class="slider">
+                <input type="checkbox" tabindex="0" db="leaderboard.ephemeral" saveName="db">
+                <span class="sliderspan"></span>
+            </label>
+        </div>
+
+        <div class="settingBox box iflbenabled">
+            <h2>Hide reward roles</h2>
+            <p class="details">Disables viewing the list of reward roles through the online leaderboard.</p>
+            <label style="margin-top: 5px"; class="slider">
+                <input type="checkbox" tabindex="0" db="leaderboard.hideRoles" saveName="db">
+                <span class="sliderspan"></span>
+            </label>
+        </div>
+
+        <div class="settingBox box iflbenabled">
+            <h2>Minimum level</h2>
+            <p class="details">Restricts the leaderboard to members that have reached a certain level. Displays every server member if set to 0.</p>
+            <div class="centerflex spacedflex">
+                <input id="maxEntries" style="width: 100px" type="number" min="0" max="1000" placeholder="0" default="0" db="leaderboard.minLevel" saveName="db">
+            </div>
+        </div>
+
+        <div class="settingBox box iflbenabled">
+            <h2>Maximum members</h2>
+            <p class="details">Only allow viewing the top X members on the leaderboard. Displays every server member if set to 0.</p>
+            <div class="centerflex spacedflex">
+                <input id="maxEntries" style="width: 100px" type="number" min="0" max="1000000" placeholder="0" default="0" db="leaderboard.maxEntries" saveName="db">
+            </div>
+        </div>
+
+        <div class="settingBox box iflbenabled">
+            <h2>Private leaderboard</h2>
+            <p class="details">Restricts the online leaderboard so only members of the server can access it.<br>(requires signing in)</p>
+            <label style="margin-top: 5px"; class="slider">
+                <input type="checkbox" tabindex="0" db="leaderboard.private" saveName="db">
+                <span class="sliderspan"></span>
+            </label>
+        </div>
+
+    </div>
+
+
+    <div class="configboxes" tab="data" style="display: none">
+        <div class="settingBox box fulllength" style="padding-bottom: 15px">
+            <h1>Data</h1>
+            <p>Settings related to the server's data.</p>
+        </div>
+        <div class="settingBreak"></div>
+
+        <div class="settingBox box fulllength">
+            <h2>Download XP</h2>
+            <p class="details" style="margin-bottom: 10px">Exports everyone's XP into a single file (only contains user ID and XP)<br><b>Download all data if you wish to import your settings into an open-source fork of Polaris.</b></p>
+            <button class="exportXP" format="everything" style="background-color: var(--emojipurple);">Download all data</button>
+            <button class="exportXP" format="json" style="margin-left: 10px">Download as .json</button>
+            <button class="exportXP" format="csv" style="margin-left: 10px">Download as .csv</button>
+            <button class="exportXP" format="txt" style="margin-left: 10px">Download as .txt</button>
+        </div>
+        <div class="settingBreak"></div>
+
+        <div class="settingBox box">
+            <h2>Clear all XP</h2>
+            <p class="details">Delete everyone's XP and start fresh. All XP will be reset to 0, but reward roles will not be removed unless done manually. <b>This cannot be undone!</b></p>
+            <button style="background-color: var(--emojired)" onclick="$('.confirmReset').toggle(); $('.confirmConfirmReset').hide()">Reset!</button>
+            <button class="hideOnLoad confirmReset" style="margin-left: 10px; background-color: var(--emojiblue); display: none;" onclick="$('.confirmConfirmReset').toggle()">Are you sure?</button>
+            <button class="hideOnLoad confirmConfirmReset" style="margin-left: 10px; background-color: var(--emojipurple); display: none;" id="resetXP">Positive?</button>
+        </div>
+
+        <div class="settingBox box">
+            <h2>Reset settings</h2>
+            <p class="details">Restores the defaults for all configurable settings such as the curve, reward roles, multipliers, level up message, etc. XP will not be cleared. <b>This cannot be undone!</b></p>
+            <button style="background-color: var(--emojired)" onclick="$('.confirmResetSettings').toggle()">Reset!</button>
+            <button class="hideOnLoad confirmResetSettings" style="margin-left: 10px; background-color: var(--emojiblue); display: none;" id="resetSettings">Are you sure?</button>
+        </div>
+        <div class="settingBreak"></div>
+
+        <div class="settingBox box">
+            <h2>Prune Members</h2>
+            <p class="details">Deletes the data of everyone who has less than a certain amount of XP. Might speed up load times. <b>This cannot be undone!</b></p>
+            <div class="centerflex spacedflex">
+                <p>Less than: </p>
+                <input id="prune_amt" style="width: 150px" type="number" min="1" default="100" value="100">
+                <button id="confirmPrune" style="background-color: var(--emojired)">Prune!</button>
+            </div>
+        </div>
+
+        <div class="settingBox box fulllength" id="importBotSection">
+            <div class="spacedflex centerflex" style="margin-top: 15px; margin-bottom: 5px">
+                <h2 style="margin: 0px 0px">Import settings and XP from</h2>
+                <select id="importfrom" style="margin-left: 8px; width: 250px; font-weight: bold;" onchange="$('.importdiv').hide(); $(`.importdiv[importtype='${$(this).val()}']`).show()">
+                    <option value="json">.json file</option>
+                    <option value="polaris">Another server</option>
+                </select>
+            </div>
+
+            <div class="importdiv" importtype="json">
+                <p class="details">Copies XP and settings from another server using this bot. <b>Requires server owner</b></p>
+                <p class="details">The expected .json format is the same as when you press "download all data" at the top of this</p>
+                
+                <div class="centerflex spacedflex">
+                    <p>Import from:</p>
+                    <input type="file" id="importJSONFile" accept="application/json" style="padding-top: 15px; width: 500px; margin: 10px 0px"></select>
+                </div>
+
+                <div class="centerflex spacedflex">
+                    <label class="slider">
+                        <input class="importSetting" option="xp" type="checkbox" checked>
+                        <span class="sliderspan"></span>
+                    </label>
+                    <p>Import XP (overwrites existing members!)</p>
+                </div>
+
+                <div class="centerflex spacedflex">
+                    <label class="slider">
+                        <input class="importSetting forDevs" option="settings" type="checkbox" disabled>
+                        <span class="sliderspan"></span>
+                    </label>
+                    <p>Import settings (cooldown, curve, level up message, etc) <b>[requires bot owner for security reasons]</b></p>
+                </div>
+            </div>
+
+            <div class="importdiv" importtype="polaris" style="display: none">
+                <p class="details">Copies XP and settings from another server using this bot. <b>Requires server owner</b></p>
+                <p class="details"><b>Note:</b> Since you are transferring from another server, reward roles and multipliers cannot be copied</p>
+                <div class="centerflex spacedflex">
+                    <p>Import from:</p>
+                    <select class="importSetting" option="serverID" id="otherServers"></select>
+                </div>
+
+                <div class="centerflex spacedflex">
+                    <label class="slider">
+                        <input class="importSetting" option="xp" type="checkbox" checked>
+                        <span class="sliderspan"></span>
+                    </label>
+                    <p>Import XP (overwrites existing members!)</p>
+                </div>
+
+                <div class="centerflex spacedflex">
+                    <label class="slider">
+                        <input class="importSetting" option="settings" type="checkbox" checked>
+                        <span class="sliderspan"></span>
+                    </label>
+                    <p>Import settings (cooldown, curve, level up message, etc)</p>
+                </div>
+            </div>
+
+            <div style="height: 60px" id="botimporting">
+                <button style="margin-top: 15px; background-color: var(--emojigreen)" onclick="$('#confirmBotImport').toggle()">Import!</button>
+                <button class="hideOnLoad" style="margin-left: 10px; background-color: var(--emojiblue); display: none;" id="confirmBotImport">Are you sure?</button>
+            </div>
+
+            <div style="display: none" id="botimportloading">
+                <p><b>Working on it...</b></p>
+            </div>
+            
+        </div>
+        
+    </div>
+
+    <div class="configboxes" tab="advanced" style="display: none">
+
+        <div class="settingBox box fulllength" style="padding-bottom: 15px">
+            <h1>Advanced Settings</h1>
+            <p>Some extra fancy or experimental options.</p>
+        </div>
+
+        <div class="settingBox box" style="height: 171px">
+            <h2>Ignore Permissions</h2>
+            <p class="details">Allows <b>anyone</b> to run moderator commands (e.g. /addxp or /clear) even if they don't have the Manage Server permission. Useful if you want to set custom slash command permissions for the server.</p>
+            <label style="margin-top: 5px"; class="slider">
+                <input type="checkbox" tabindex="0" db="manualPerms" saveName="db">
+                <span class="sliderspan"></span>
+            </label>
+        </div>
+
+        <div class="settingBox box" style="height: 171px">
+            <h2>Maximum Level</h2>
+            <p class="details">The highest level that members can reach. They can still gain XP past this.<br>To disable XP gain after reaching the max level, use a reward role with a 0x multiplier.</p>
+            <div class="centerflex spacedflex" style="margin-top: 10px">
+                <input style="width: 80px" type="number" min="0" max="1000" placeholder="1000" default="1000" db="maxLevel" saveName="db">
+            </div>
+        </div>
+
+        <div class="settingBox box" style="height: 145px">
+            <h2>Custom /rank Embed Color</h2>
+            <p class="details">Changes the embed color when using /rank.<br>Uses the member's role/profile color by default.</p>
+            <div class="centerflex" style="height: 45px">
+                <label style="margin-top: 5px"; class="slider">
+                    <input type="checkbox" tabindex="0" id="useCustomEmbedColRank" onchange="$('#customEmbedColRankConfig').toggle($(this).prop('checked')); checkUnsavedChanges()">
+                    <span class="sliderspan"></span>
+                </label>
+
+                <div id="customEmbedColRankConfig" class="centerflex" style="display: none">
+                    <input style="width: 100px; margin-left: 20px" class="colorInput" for="customEmbedColRank" maxlength="7" value="#00ff80" placeholder="#00ff80">
+                    <div style="margin-left: 10px" class="colInputPreview" for="customEmbedColRank" tabindex="0"></div>
+                    <input class="hiddenColInput previewColorInput" value="#00ff80" type="color" id="customEmbedColRank" db="rankCard.embedColor" saveName="db" useIf="useCustomEmbedColRank">
+                </div>
+            </div>
+        </div>
+
+        <div class="settingBox box" style="height: 145px">
+            <h2>Custom /top Embed Color</h2>
+            <p class="details">Changes the embed color when using /top.<br>Uses Polaris' green by default.</p>
+            <div class="centerflex" style="height: 45px">
+                <label style="margin-top: 5px"; class="slider">
+                    <input type="checkbox" tabindex="0" id="useCustomEmbedColTop" onchange="$('#customEmbedColTopConfig').toggle($(this).prop('checked')); checkUnsavedChanges()">
+                    <span class="sliderspan"></span>
+                </label>
+
+                <div id="customEmbedColTopConfig" class="centerflex" style="display: none">
+                    <input style="width: 100px; margin-left: 20px" class="colorInput" for="customEmbedColTop" maxlength="7" value="#00ff80" placeholder="#00ff80">
+                    <div style="margin-left: 10px" class="colInputPreview" for="customEmbedColTop" tabindex="0"></div>
+                    <input class="hiddenColInput previewColorInput" value="#00ff80" type="color" id="customEmbedColTop" db="leaderboard.embedColor" saveName="db" useIf="useCustomEmbedColTop">
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+
+<script type="text/javascript" src="/polaris.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.js"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-135255146-1"></script>
+<script>window.dataLayer = window.dataLayer || []; function gtag() { dataLayer.push(arguments); } gtag('js', new Date()); gtag('config', 'UA-135255146-1');</script>
+<script src="https://www.desmos.com/api/v1.7/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
+
+<script>
+    addUhOh()
+
+    let guildID = window.location.pathname.split("/").pop().split("-")[0]
+    let serverName = guildID
+    let lastUpdated = 0
+
+    const multiplierDescriptions = {
+        role: {
+            largest: "If you have 0.5x and 2.0x role multipliers, 2.0x will be picked.",
+            smallest: "If you have 0.5x and 2.0x role multipliers, 0.5x will be picked.",
+            highest: "If you have multiple role multipliers, the highest listed role will be picked.",
+            add: "If you have 1.5x, 2.0x, and 0.75x role multipliers, they will be summed together as to 2.25x. (add n-1 from each)",
+            combine: "If you have 2.0x and 3.0x role multipliers, they will be multiplied to 6.0x. Scales absurdly fast."
+        },
+
+        channel: {
+            multiply: "If your role is 2.0x and the channel is 3.0x, final multiplier is 6.0x.",
+            add: "If your role is 2.0x and the channel is 1.5x, they will be summed together to 2.5x. (add n-1 from each)",
+            largest: "If your role is 2.0x and the channel is 1.5x, 2.0x will be picked because it's higher.",
+            channel: "If the channel has any multiplier (including 1.0x), always use it instead of the role.",
+            role: "If you have any role multiplier (including 1.0x), always use it instead of the channel."
+        }
+    }
+
+    Fetch(`/api/settings/${guildID}`).then(data => {
+
+        console.log(data)
+
+        let db = data.settings
+        serverName = data.guild.name
+        document.title = "Settings for " + serverName
+        lastUpdated = data.guild.lastUpdate || 0
+
+        // curve graph ft. desmos
+        let desmosConfig = {
+            fontSize: 14,
+            expressions: false,
+            invertedColors: true,
+            advancedStyling: true,
+            restrictGridToFirstQuadrant: true,
+            xAxisLabel: "Level",
+            yAxisLabel: "XP Required",
+            backgroundColor: "#202020",
+        }
+
+        let desmosBounds = {
+            left: 0,
+            bottom: 0,
+            right: 50,
+            top: 10 ** 5.5
+        }
+
+        // failsafe in case the desmos api breaks
+        let desmosGraph = typeof Desmos != "undefined" ? Desmos.GraphingCalculator(document.getElementById('xpGraph'), desmosConfig) : null
+        if (desmosGraph) {
+            desmosGraph.setMathBounds(desmosBounds)
+            desmosGraph.setDefaultState(desmosGraph.getState())
+        }
+        else $('#desmosJumpscare').removeAttr("style").text("Looks like Desmos failed to load ¯\\_(ツ)_/¯")
+
+        $('.serverName').text(data.guild.name)
+        $('.serverMembers').text(commafy(data.guild.members || "?") + " member" + (data.guild.members == 1 ? "" : "s"))
+        $('.serverIcon').attr('src', data.guild.icon || "/assets/avatar.png")
+        $('#otherServers').append(data.ownedServers.map(x => `<option value="${x.id}">${x.name}</option>`))
+        
+        // fill in inputs with current values
+        $('input[db], select[db]').each(function() {
+            let dbKey = $(this).attr('db').split('.')
+            let dbVal = db
+            while (dbKey.length) dbVal = dbVal[dbKey.shift()]
+            if ($(this).attr('type') == "checkbox") $(this).prop("checked", $(this).attr("invert") ? !dbVal : dbVal)
+            else $(this).val(dbVal || dbVal === 0 ? dbVal : $(this).attr('default'))
+        })
+        
+        // number placeholders, show range
+        $('input[type="number"][min][max]').each(function() {
+            if (!$(this).attr("placeholder")) $(this).attr("placeholder", `${$(this).attr("min")} - ${$(this).attr("max")}`)
+        })
+
+        // fill in curve table
+        let curvePreviewNumbers = [1, 2, 3, 4, 5, 7, 10, 25, 50, 100, 200]
+        buildCurveTable($('#curvePreview'), curvePreviewNumbers, db.curve, db.rounding, db.gain.min, db.gain.max, db.gain.time)
+        displayCurveDifficulty(db.curve, $('#scaleDifficulty'))
+
+        // swap min and max if max is lower
+        function checkMinMax() {
+            let max = +$('#num_max').val()
+            let min = +$('#num_min').val()
+            if (min > max) {
+                $('#num_min').val(max)
+                $('#num_max').val(min)
+            }
+        }
+
+        // update curve on change
+        $('input[updatecurve]').blur(function() {
+            checkMinMax()
+            updateCurveTable()
+        })
+
+        // update cooldown time on change
+        $('#num_time').on("input change blur", function() {
+            let val = Number($(this).val())
+            if (val >= 60) {
+                $('#cooldownunit').text(`(${timeStr(val * 1000, 1)})`)
+                $('#cooldownunit').show()
+            }   
+            else $('#cooldownunit').hide()
+        })
+        $('#num_time').trigger('change')
+
+        // curve presets
+        let presets = data.curvePresets.presets
+        presets.unshift({
+            "name": data.guild.name,
+            "desc": "The custom settings that your server currently uses.",
+            "curve": db.curve,
+            "round": db.rounding,
+            "bestRange": [db.gain.min, db.gain.max]
+        })
+
+        presets.forEach(x => {
+            $('#curvePresets').append(`<option value="${x.name}">${x.name}</option>`)
+        })
+
+        let foundPreset = presets.find(x => x.name != data.guild.name && JSON.stringify([x.curve, x.round, x.bestRange]) == JSON.stringify([db.curve, db.rounding, [db.gain.min, db.gain.max]])) || presets[0]
+        $("#curvePresets").val(foundPreset.name)
+
+        // on curve preset selection
+        $('#curvePresets').change(function() {
+            let newVal = $(this).val()
+            let foundPreset = presets.find(x => x.name == newVal) || presets[0]
+            $('#presetDesc').html(foundPreset.desc)
+            $('#presetCurve').html(`${+foundPreset.curve[3].toFixed(4)}x<sup>3</sup> + ${+foundPreset.curve[2].toFixed(4)}x<sup>2</sup> + ${+foundPreset.curve[1].toFixed(4)}x`)
+            $('#presetRound').html(foundPreset.round)
+            $('#presetXP').html(foundPreset.bestRange.join(" - "))
+            displayCurveDifficulty(foundPreset.curve, $('#presetDifficulty'))
+        })
+        $('#curvePresets').trigger('change') // default preset
+
+        // on preset apply
+        $('#applyPreset').click(function() {
+            let foundPreset = presets.find(x => x.name == $('#curvePresets').val())
+            if (!foundPreset) return
+            $("#num_round").val(foundPreset.round)
+            $("#num_min").val(foundPreset.bestRange[0])
+            $("#num_max").val(foundPreset.bestRange[1])
+            $("#num_curve1").val(foundPreset.curve[1])
+            $("#num_curve2").val(foundPreset.curve[2])
+            $("#num_curve3").val(foundPreset.curve[3])
+            $("#curveStuff")[0].scrollIntoView()
+            updateCurveTable()
+            checkUnsavedChanges()
+        })
+
+        // xp curve table update
+        function updateCurveTable() {
+            let newCurve = { 3: +$('#num_curve3').val(), 2: +$('#num_curve2').val(), 1: +$('#num_curve1').val() }
+            if (!newCurve[3] && !newCurve[2] && !newCurve[1]) {
+                $('#num_curve1').val(1)
+                newCurve[1] = 1
+            }
+
+            let tableArgs = [newCurve, +$("#num_round").val(), +$("#num_min").val(), +$("#num_max").val(), +$("#num_time").val()]
+
+            buildCurveTable($('#curvePreview'), curvePreviewNumbers, ...tableArgs)
+            if ($('#fullPreviewSection').is(":visible")) buildCurveTable($('#fullCurvePreview'), 500, ...tableArgs, true)
+            displayCurveDifficulty(newCurve, $('#scaleDifficulty'))
+        }
+
+        // expanded curve table
+        $('#showMoreCurveInfo').click(function() {
+            let isVisible = $('#fullPreviewSection').toggle()
+            if ($('#fullPreviewSection').is(":visible")) updateCurveTable()
+        })
+
+        // xp curve table
+        function buildCurveTable(element, levels, curve={}, rounding=100, min=50, max=100, time=60, extra) {
+            if (!Array.isArray(levels)) {
+                let maxLevel = parseInt(levels) || 1000
+                levels = []
+                for (let i=1; i <= maxLevel; i++) levels.push(i)
+            }
+
+            let columns = [
+                {name: "Level", id: "level"},
+                {name: "XP", id: "xp", extra: true},
+                {name: "Messages", id: "msgs", extra: true},
+                {name: "Cooldown Time", id: "time", extra: true},
+                {name: "Total XP", id: "cum_xp"},
+                {name: "Total Messages", id: "cum_msgs"},
+                {name: "Total Cooldown", id: "cum_time"}
+            ]
+
+            if (!extra) columns = columns.filter(x => !x.extra)
+
+            element.empty();
+            element.append(columns.map(x => `<div col="${x.id}"><p><b>${x.name}</b></p></div>`))
+            
+            levels.forEach(lvl => {
+
+                let xpRequired = getXPForLevel(lvl, curve, rounding)
+                let previousRequired = getXPForLevel(lvl - 1, curve, rounding)
+                let relativeRequired = Math.round(xpRequired - previousRequired)
+
+                let msgsRequired = getAvgMessagesRequired(min, max, relativeRequired)
+                let cumMsgsRequired = getAvgMessagesRequired(min, max, xpRequired)
+
+                let totalTime = msgsRequired * time
+                let cumTime = cumMsgsRequired * time
+                let apx = min == max ? "" : "~ "
+
+                columns.forEach(col => {
+
+                    let column = element.find(`div[col=${col.id}]`)
+                    let val = 0
+
+                    switch(col.id) {
+                        case "level": val = commafy(lvl); break;
+                        case "xp": val = "+ " + commafy(relativeRequired); break;
+                        case "msgs": val = apx + commafy(msgsRequired); break;
+                        case "time": val = apx + timeStr(totalTime * 1000, 1, false, true); break;
+                        case "cum_xp": val = commafy(xpRequired); break;
+                        case "cum_msgs": val = apx + commafy(cumMsgsRequired); break;
+                        case "cum_time": val = apx + timeStr(cumTime * 1000, 1, false, true)
+                    }
+                    column.append(`<p>${val}</p>`)
+                })
+            })
+
+            if (desmosGraph) {
+                desmosGraph.setExpression({ id: 'xp', color: "#0080FF", latex: `y = ${curve[3]}x^3 + ${curve[2]}x^2 + ${curve[1]}x \\{x>=0\\}` })
+                // desmosGraph.setExpression({ id: 'required', color: "#FF0080", latex: `y = ${curve[3] * 3}x^2 + ${curve[2] * 2}x + ${curve[1]} \\{x>=0\\}` })
+            }
+
+            let curveDiff = getCurveDifficulty(curve)
+            element.attr("difficulty", curveDiff)
+            return curveDiff
+        }
+
+        // home tab
+        let categorySlot = $('.categoryBox').clone()
+        $('.categoryBox').remove()
+        $('.category').each(function(index) {
+            if (index == 0 || $(this).hasClass("unlisted")) return
+            let cSlot = categorySlot.clone()
+            cSlot.find('h2[cat=name]').text($(this).find('p').text())
+            cSlot.find('p[cat=info]').text($(this).attr('title'))
+            cSlot.find('img[cat=icon]').attr("src", $(this).find('img').attr('src'))
+            cSlot.find('p[cat=extra]').attr("category", $(this).attr('category'))
+            cSlot.addClass('categoryShortcut').attr('category', $(this).attr('category'))
+            $('#serverInfo').append(cSlot)
+        })
+        
+        // on category change
+        $('.category').on("click keydown", function(e) {
+            if (ignoreTabPress(e)) return
+            $('.current').removeClass('current')
+            $(this).addClass('current')
+            $('.configboxes').hide()
+            $(`.configboxes[tab="${$(this).attr('category')}"]`).show()
+            $('.hideOnLoad').hide()
+        })
+        $('.category[category="server"]').trigger('click') // default category
+
+        $('.categoryShortcut').on("click keydown", function(e) {
+            if (ignoreTabPress(e)) return
+            $(`.category[category="${$(this).attr('category')}"]`).trigger('click')
+        })
+
+        // extra info on home
+        updateHomeInfo = function(data) {
+            $('p[cat="extra"][category="xp"]').text(data.enabled ? `Enabled! ${commafy(data["gain.min"])}${data["gain.min"] == data["gain.max"] ? "" : `-${commafy(data["gain.max"])}`} XP every ${commafy(data["gain.time"])}s` : "XP disabled!").css("color", data.enabled ? "var(--polarisgreen)" : "#ff6666")
+            $('p[cat="extra"][category="rewardroles"]').text(data.rewards.length ? addS(data.rewards.length, "reward role") : "No reward roles")
+            $('p[cat="extra"][category="levelup"]').text(data["levelUp.enabled"] && data["levelUp.message"] ? `Enabled!${data["levelUp.embed"] ? " (embedded)" : ""}` : "Disabled")
+            $('p[cat="extra"][category="multipliers"]').text(`${addS(data["multipliers.roles"].length, "role")}, ${addS(data["multipliers.channels"].length, "channel")}`)
+            $('p[cat="extra"][category="rankcard"]').text(`${data["rankCard.disabled"] ? "Disabled" : data["rankCard.ephemeral"] ? "Invisible" : "Enabled!"}`)
+            $('p[cat="extra"][category="leaderboard"]').text(`${data["leaderboard.disabled"] ? "Disabled" : data["leaderboard.private"] ? "Private" : "Enabled!"}${data["leaderboard.maxEntries"] ? ` (max ${commafy(data["leaderboard.maxEntries"])})` : ""}`)
+            $('p[cat="extra"][category="data"]').text(`Last saved: ${lastUpdated ? `${new Date(lastUpdated).toLocaleString([], {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit'})}` : "Never"}`)
+            $('#mainlbbutton').toggle(!data['leaderboard.disabled'])
+        }
+
+        // multipliers
+        let roleMultipliers = db.multipliers.roles
+        let channelMultipliers = db.multipliers.channels
+
+        // reward role table
+        let rewards = db.rewards
+        rewards.forEach(x => { if (!x.noSync) x.noSync = false }) // undefined -> false
+
+        function buildRewardTable() {
+            let excludeEnabled = $('#excludeRewardToggle').prop('checked')
+            rewards = rewards.sort((a, b) => a.level - b.level)
+            $('#rewards').html(`
+                <div col="lvl" style="width: 100px"><p><b>Level</b></p></div>
+                <div col="role" style="width: 400px"><p><b>Role</b></p></div>
+                <div col="keep" style="width: 100px"><p><b>Keep</b></p></div>
+                <div col="exclude" style="width: 100px${!excludeEnabled ? "; display: none" : ""}"><p><b>Sync</b></p></div>
+                <div col="delete" style="width: 80px"><p><b>Delete</b></p></div>
+            `)
+
+            rewards.forEach(reward => {
+                let foundRole = data.roles.find(x => x.id == reward.id)
+                if (!foundRole) return
+                else $(`#rewardRoleSelect option[value=${reward.id}]`).prop('hidden', true)
+
+                $('#rewards div[col="lvl"]').append(`<p class="rewardLevel numberinput" tabindex="-1" roleID="${reward.id}" min="1" max="1000" default="10" contenteditable>${reward.level}</p>`)
+                $('#rewards div[col="role"]').append(`<p class="longname" style="color: ${foundRole.color == "#000000" ? "var(--defaultrolecol)" : foundRole.color}">${foundRole.name}</p>`)
+                $('#rewards div[col="keep"]').append(`<p class="toggleRow" tr="keep" tabindex="0" roleID="${reward.id}" style="color: ${reward.keep ? "lime" : "nah"}">${reward.keep ? "Yes" : "No"}${reward.noSync && !excludeEnabled ? "*" : ""}</p>`)
+                $('#rewards div[col="exclude"]').append(`<p class="toggleRow" tr="noSync" tabindex="0" roleID="${reward.id}" style="color: ${reward.noSync ? "red" : "lime"}">${reward.noSync ? "No" : "Yes"}</p>`)
+                $('#rewards div[col="delete"]').append(`<p class="deleteRow deleteReward" tabindex="0" roleID="${reward.id}">🗑️</p>`)
+            })
+            $('#rewardCount').html(rewards.length)
+            checkUnsavedChanges()
+        }
+
+        // role selector appending (hacky but whatever, screw frontend stuff)
+        function appendRoleSelect(element, roleOption, role, onlyGrantable, hideCondition) {
+            let option = roleOption.clone()
+            let roleSelect = $(element)
+            if (hideCondition) option.prop("hidden", true)
+            if (!roleSelect.children().length) roleSelect.append("<option value='none' selected disabled>(role)</option>")
+
+            if (onlyGrantable && !role.grantable) {
+                if (option.val() == data.guild.id) return
+                option.css("color", "")
+                option.prop("disabled", true)
+                option.html(option.html() + " -- too high to grant!")
+            }
+
+            return roleSelect.append(option)
+        }
+
+        // role selectors
+        data.roles.forEach(x => {
+            let roleOption = $(`<option value="${x.id}">${x.name}</option>`)
+            roleOption.css("color", x.color == "#000000" ? "var(--defaultrolecol)" : x.color)
+
+            if (!x.managed) appendRoleSelect('#rewardRoleSelect', roleOption, x, true, rewards.some(r => r.id == x.id))
+            appendRoleSelect('#roleMultiplierSelect', roleOption, x, false, roleMultipliers.some(r => r.id == x.id))
+        })
+
+        let channelPrefixes = { channel: "#", category: "&gt; ", vc: "🔊 ", thread: "└─ ", forum: "💬 "}
+        let chMultiplierChannels = data.channels.map(x => `<option ${x.type == "category" ? `style="font-weight: bold"` : ""} value="${x.id}">${channelPrefixes[x.type] || "* "}${x.name}</option>`)
+        $('#channelMultiplierSelect').append("<option value='none' selected disabled>(channel)</option>").append(chMultiplierChannels)
+
+
+        // add new reward role
+        $('#addRewardRole').click(function() {
+            let roleID = $('#rewardRoleSelect').val()
+            let level = Math.round($('#rewardLevel').val())
+            let keep = !$('#rewardKeep').prop('checked')
+            let noSync = $('#rewardExclude').prop('checked')
+
+            if (!data.roles.some(x => x.id == roleID) || rewards.some(x => x.id == roleID) || !level || level <= 0 || level > 1000) return
+            else rewards.push({ id: roleID, level, keep, noSync })
+            $('#rewardRoleSelect').val("none")
+            buildRewardTable()
+        })
+
+        $('#rewardRoleSelect').change(function() {
+            let selected = $(this).find(":selected").text()
+            let foundNumber = selected.match(/[0-9.]+/)
+            if (foundNumber && !foundNumber[0].includes(".")) {
+                let num = Number(foundNumber[0])
+                if (num > 0 && num <= 1000) $('#rewardLevel').val(num)
+            }
+        })
+
+        // reward role - swap keep
+        $(document).on('click keydown', '.toggleRow', function(e) {
+            if (ignoreTabPress(e)) return
+            let tr = $(this).attr("tr")
+            let foundReward = rewards.find(x => x.id == $(this).attr("roleID"))
+            if (foundReward) foundReward[tr] = !foundReward[tr]
+            buildRewardTable()
+        })
+
+        // reward role - delete
+        $(document).on('click keydown', '.deleteReward', function(e) {
+            if (ignoreTabPress(e)) return
+            let foundReward = rewards.find(x => x.id == $(this).attr("roleID"))
+            if (foundReward) rewards = rewards.filter(x => x.id != foundReward.id)
+            $(`#rewardRoleSelect option[value=${foundReward.id}]`).prop('hidden', false)
+            buildRewardTable()
+        })
+
+        // reward role - edit level
+        $(document).on('blur', '.rewardLevel', function() {
+            let foundReward = rewards.find(x => x.id == $(this).attr("roleID"))
+            if (!foundReward) return
+            let newVal = Math.round($(this).text())
+            if (newVal != foundReward.level && newVal > 0 && newVal <= 1000) foundReward.level = newVal
+            buildRewardTable()
+        })
+
+        // reward role - toggle excuded
+        $('#excludeRewardToggle').click(function() {
+            let checked = $(this).prop('checked')
+            window.scrollTo({top: 0, behavior: 'smooth'});
+            if (checked) $('.excludeMode').show()
+            else $('.excludeMode').hide()
+            buildRewardTable()
+        })
+        if (rewards.some(x => x.noSync)) $('#excludeRewardToggle').prop('checked', true)
+        else $('.excludeMode').hide()
+
+        // show curve difficulty
+        function displayCurveDifficulty(curve, difficultyText) {
+            let diffRating = Number(getCurveDifficulty(curve).toFixed(2))
+            let ratingKeys = Object.entries(data.curvePresets.difficultyRatings).reverse()
+            return difficultyText.text(`${commafy(diffRating)} (${ratingKeys.find(x => +x[0] <= diffRating)[1]})`)
+        }
+
+        // multiplier role table
+        function buildRoleMultiplerTable() {
+            roleMultipliers = roleMultipliers.sort((a, b) => a.boost - b.boost)
+            $('#roleMultipliers').html(`
+                <div col="boost" style="width: 140px"><p><b>Multiplier</b></p></div>
+                <div col="role" style="width: 380px"><p><b>Role</b></p></div>
+                <div col="delete" style="width: 80px"><p><b>Delete</b></p></div>
+            `)
+
+            roleMultipliers.forEach(boost => {
+                let foundRole = data.roles.find(x => x.id == boost.id)
+                if (!foundRole) return
+                else $(`#roleMultiplierSelect option[value=${boost.id}]`).prop('hidden', true)
+
+                $('#roleMultipliers div[col="boost"]').append(`<p class="roleMultiplierAmount numberinput" roleID="${boost.id}" min="0" max="100" decimals="4" default="1" tabindex="-1" contenteditable>${+boost.boost}x</p>`)
+                $('#roleMultipliers div[col="role"]').append(`<p class="longname" style="color: ${foundRole.color == "#000000" ? "var(--defaultrolecol)" : foundRole.color}">${foundRole.name}</p>`)
+                $('#roleMultipliers div[col="delete"]').append(`<p class="deleteRow deleteRoleMultiplier" tabindex="0" roleID="${boost.id}">🗑️</p>`)
+            })
+            $('#roleMultiplierCount').html(roleMultipliers.length)
+            checkUnsavedChanges()
+        }
+
+        // add new multiplier role
+        $('#addRoleMultiplier').click(function() {
+            let roleID = $('#roleMultiplierSelect').val()
+            let boost = Number(Number($('#roleMultiplierAmount').val()).toFixed(2))
+
+            if (isNaN(boost) || !$('#roleMultiplierAmount').val() || !data.roles.some(x => x.id == roleID) || roleMultipliers.some(x => x.id == roleID) || boost < 0 || boost > 100) return
+            else roleMultipliers.push({ id: roleID, boost: boost })
+            $('#roleMultiplierSelect').val("none")
+            buildRoleMultiplerTable()
+        })
+
+        // multiplier role - delete
+        $(document).on('click keydown', '.deleteRoleMultiplier', function(e) {
+            if (ignoreTabPress(e)) return
+            let foundReward = roleMultipliers.find(x => x.id == $(this).attr("roleID"))
+            if (foundReward) roleMultipliers = roleMultipliers.filter(x => x.id != foundReward.id)
+            $(`#roleMultiplierSelect option[value=${foundReward.id}]`).prop('hidden', false)
+            buildRoleMultiplerTable()
+        })
+        
+        // multiplier role - edit amount
+            $(document).on('blur', '.roleMultiplierAmount', function() {
+            let foundMultiplier = roleMultipliers.find(x => x.id == $(this).attr("roleID"))
+            let newBoost = Number(Number($(this).text()).toFixed(2))
+            if (foundMultiplier && !isNaN(newBoost) && newBoost >= 0 && newBoost <= 100) foundMultiplier.boost = newBoost
+            buildRoleMultiplerTable()
+        })
+
+        // multiplier s - remove X when editing amount
+                $(document).on('focus', '.roleMultiplierAmount, .channelMultiplierAmount', function() {
+            $(this).html($(this).html().replace("x", ""))
+        })
+
+
+        // welcome to downtown copypasteville
+        // multiplier channel table
+        function buildChannelMultiplierTable() {
+            channelMultipliers = channelMultipliers.filter(x => data.channels.some(c => c.id == x.id))
+            .sort((a, b) => data.channels.findIndex(c => c.id == a.id) - data.channels.findIndex(c => c.id == b.id))
+
+            $('#channelMultipliers').html(`
+                <div col="boost" style="width: 140px"><p><b>Multiplier</b></p></div>
+                <div col="channel" style="width: 380px"><p><b>Channel</b></p></div>
+                <div col="delete" style="width: 80px"><p><b>Delete</b></p></div>
+            `)
+
+            channelMultipliers.forEach(boost => {
+                let foundChannel = data.channels.find(x => x.id == boost.id)
+                if (!foundChannel) return
+                else $(`#channelMultiplierSelect option[value=${boost.id}]`).prop('hidden', true)
+
+                $('#channelMultipliers div[col="boost"]').append(`<p class="channelMultiplierAmount numberinput" channelID="${boost.id}" min="0" max="100" decimals="4" default="1" tabindex="-1" contenteditable>${+boost.boost}x</p>`)
+                $('#channelMultipliers div[col="channel"]').append(`<p class="longname">${channelPrefixes[foundChannel.type] || "* "}${foundChannel.name}</p>`)
+                $('#channelMultipliers div[col="delete"]').append(`<p class="deleteRow deleteChannelMultiplier" tabindex="0" channelID="${boost.id}">🗑️</p>`)
+            })
+            $('#channelMultiplierCount').html(channelMultipliers.length)
+            checkUnsavedChanges()
+        }
+
+        // add new multiplier channel
+        $('#addChannelMultiplier').click(function() {
+            let channelID = $('#channelMultiplierSelect').val()
+            let boost = Number(Number($('#channelMultiplierAmount').val()).toFixed(2))
+
+            if (isNaN(boost) || !$('#channelMultiplierAmount').val() || !data.channels.some(x => x.id == channelID) || channelMultipliers.some(x => x.id == channelID) || boost < 0 || boost > 100) return
+            else channelMultipliers.push({ id: channelID, boost: boost })
+            $('#channelMultiplierSelect').val("none")
+            buildChannelMultiplierTable()
+        })
+
+        // multiplier channel - delete
+        $(document).on('click', '.deleteChannelMultiplier', function() {
+            let foundReward = channelMultipliers.find(x => x.id == $(this).attr("channelID"))
+            if (foundReward) channelMultipliers = channelMultipliers.filter(x => x.id != foundReward.id)
+            $(`#channelMultiplierSelect option[value=${foundReward.id}]`).prop('hidden', false)
+            buildChannelMultiplierTable()
+        })
+        
+        // multiplier channel - edit amount
+            $(document).on('blur', '.channelMultiplierAmount', function() {
+            let foundMultiplier = channelMultipliers.find(x => x.id == $(this).attr("channelID"))
+            let newBoost = Number(Number($(this).text()).toFixed(2))
+            if (foundMultiplier && !isNaN(newBoost) && newBoost >= 0 && newBoost <= 100) foundMultiplier.boost = newBoost
+            buildChannelMultiplierTable()
+        })
+
+
+        // level up message channel
+        $("#lvlMessageSelect").append(data.channels.filter(x => x.type == "channel").map(x => `<option value="${x.id}">#${x.name}</option>`))
+        $("#lvlMessageSelect").val(db.levelUp.channel)
+        if (!$("#lvlMessageSelect").val()) $("#lvlMessageSelect").val("current")
+
+        if (!db.levelUp.enabled) $('.ifmessageenabled').hide()
+        if (db.leaderboard.disabled) $('.iflbenabled').hide()
+        if (db.rankCard.disabled) $('.ifrankenabled').hide()
+
+        if (db.levelUp.embed) {
+            $('#regularMessage').hide()
+            $('#embedMessage').show()
+            $('#lvlUpMessage').addClass('inactiveSave')
+            $('#lvlUpEmbed').removeClass('inactiveSave')
+            $('#lvlUpEmbed').text(db.levelUp.message)
+        }
+
+        else {
+            $('#regularMessage').show()
+            $('#embedMessage').hide()
+            $('#lvlUpEmbed').addClass('inactiveSave')
+            $('#lvlUpMessage').removeClass('inactiveSave')
+            $('#lvlUpMessage').text(db.levelUp.message)
+        }
+
+        $('#toggleLvlUpEmbed').click(function() {
+            $('#regularMessage').toggle()
+            $('#embedMessage').toggle()
+            $('#lvlUpMessage, #lvlUpEmbed').toggleClass('inactiveSave')
+        })
+
+        $('#lvlUpEmbed').on("change blur", function() {
+            if ($(this).val().trim().length < 1) {
+                $(this).val("")
+                return $('#invalidLevelUpEmbed').hide()
+            }
+            else if (validateEmbedJSON()) $('#invalidLevelUpEmbed').hide()
+            else $('#invalidLevelUpEmbed').show()
+        })
+
+        $('#lvlUpMessageVariables select').change(function() {
+            let text = $(this).val()
+            let textbox = $('.lvlTextbox:visible')
+            $(this).val("x")
+            if (!textbox.length) return
+
+            let cursor = textbox[0].selectionStart;
+            textbox.val(textbox.val().slice(0, cursor) + text + textbox.val().slice(cursor))
+            textbox.focus();
+            textbox[0].selectionStart = textbox[0].selectionEnd = cursor + text.length; 
+        })
+
+        $('.multiplierSelect').change(function() {
+            let mType = $(this).attr('desc')
+            let desc = multiplierDescriptions[mType][$(this).val()] || "i am error"
+            $(`#${mType}MultiplierDescription`).text(desc)
+        })
+        $('.multiplierSelect').trigger('change')
+
+        $('.colInputPreview').on("click keydown", function(e) {
+            if (ignoreTabPress(e)) return
+            $(`#${$(this).attr("for")}`).trigger("click")
+        })
+
+        $('.previewColorInput').on("input blur", function() {
+            let id = $(this).attr("id")
+            $(`.colInputPreview[for="${id}"]`).css("background-color", $(this).val())
+            $(`.colorInput[for="${id}"]`).val($(this).val())
+        })
+
+        $('.colorInput').on("input blur", function(e) {
+            let colFor = $(this).attr("for")
+            let val = $(this).val().replace("#", "")
+            if (val.match(/^[0-9a-fA-F]{6}$/)) {
+                $(`#${colFor}`).val("#" + val)
+                $(`.colInputPreview[for="${colFor}"]`).css("background-color", "#" + val)
+            }
+            if (e.type == "blur") { $(`#${colFor}`).trigger("blur"); checkUnsavedChanges() }
+        })
+
+        function toggleEmbedColorDiv(val, name, slider) {
+            if (val == -1) return
+            $(`#${slider}`).prop("checked", true)
+            $(`#${name}Config`).show()
+            $(`#${name}`).val("#" + val.toString(16)).trigger("input")
+        }
+
+        toggleEmbedColorDiv(db.rankCard.embedColor, "customEmbedColRank", "useCustomEmbedColRank")
+        toggleEmbedColorDiv(db.leaderboard.embedColor, "customEmbedColTop", "useCustomEmbedColTop")
+        
+        $('.leaderboardLink').attr("href", "/leaderboard/" + data.guild.id)
+
+        if (data.guild.botDev) $('.forDevs').removeAttr('disabled')
+
+        generateSaveJSON = function() {
+            let settings = { rewards, "multipliers.roles": roleMultipliers, "multipliers.channels": channelMultipliers }
+
+            $("[saveName]:not(.inactiveSave)").each(function() {
+                let x = $(this)
+                let node = x.prop("nodeName")
+                let property = x.attr("saveName")
+                if (property == "db") property = x.attr("db")
+                let val = x.val()
+
+                switch(node) {
+
+                    case "INPUT": case "TEXTAREA":
+                        let aType = x.attr("type")
+                        if (aType == "number") settings[property] = +val
+                        else if (aType == "checkbox") settings[property] = x.attr("invert") ? !x.prop("checked") : x.prop("checked")
+                        else if (aType == "color") {
+                            if (x.attr("useif") && !$('#' + x.attr("useif")).prop("checked")) settings[property] = -1
+                            else settings[property] = parseInt(val.replace("#", ""), 16)
+                        }
+                        else settings[property] = val
+                        break
+
+                    default:
+                        settings[property] = val
+                        
+                }
+            })
+
+            return settings
+    }
+
+    buildRewardTable()
+    buildRoleMultiplerTable()
+    buildChannelMultiplierTable()
+
+    let defaultData = generateSaveJSON()
+    updateHomeInfo(defaultData)
+    lastSavedData = JSON.stringify(defaultData)
+
+    $('#everything').show()
+    $('#loading').hide()
+
+    }).catch((e) => {
+        console.error(e)
+        $('#errorheader').css('margin-top', '70px')
+        if (e.apiError) switch (e.code) {
+            case "noPerms":
+                $('#errorheader').text("No permission!")
+                $('#errorfooter').text("You don't have permission to manage this server.")
+                break;
+
+            case "login":
+                $('#errorheader').text("Not logged in!")
+                $('#errorfooter').text("Please log in to manage this server.")
+                $('#loginbutton').show()
+                break;
+
+            default:
+                $('#errorfooter').text(e.message)
+                break;
+        }
+
+        else {
+            $('#errorfooter').text(e.message)
+            $('#errorhelp').show()
+        }
+        
+        $('#loading').hide()
+        $('#uhoh').show()
+    })
+
+    let lastSavedData;
+
+    // need these to be global, excellent programming i know
+    let generateSaveJSON = function() { return {} }
+    let updateHomeInfo = function() { return {} }
+
+    function addS(amount, str) {
+        return `${commafy(amount)} ${str}${amount == 1 ? "" : "s"}`
+    }
+
+    this.commafy = function(num, locale="en-US") {
+            return num.toLocaleString(locale, { maximumFractionDigits: 10 })
+        }
+
+    function commafy(num, locale="en-US") {
+        return num.toLocaleString(locale, { maximumFractionDigits: 10 })
+    }
+
+    function getXPForLevel(level, curve, rounding) {
+        let xpRequired = Object.entries(curve).reduce((total, n) => total + (n[1] * (level ** n[0])), 0)
+        return rounding > 1 ? rounding * Math.round(xpRequired / rounding) : xpRequired
+    }
+
+    function getAvgMessagesRequired(min, max, xp) {
+        return Math.round([min, max].map(x => xp / x).reduce((a, b) => a + b, 0) / 2)
+    }
+
+    function getCurveDifficulty(curve, levelTest=75) {
+        let second_derivative = (6 * curve[3] * levelTest) + (2 * curve[2])
+        return second_derivative
+    }
+
+    // for focused elements - ignore unless pressing space or enter
+    function ignoreTabPress(e) {
+        return (e.type == "keydown" && ![32, 13].includes(e.keyCode))
+    }
+
+    // check if unsaved changes were made
+    function hasUnsavedChanges() { 
+        return lastSavedData != JSON.stringify(generateSaveJSON())
+    }
+
+    // generate save json but only the values that actually changed
+    function compareSaveJSON() {
+        let lastSaved = JSON.parse(lastSavedData)
+        let currentSaved = generateSaveJSON()
+        let diff = {}
+        Object.keys(currentSaved).forEach(k => {
+            if (JSON.stringify(currentSaved[k]) != JSON.stringify(lastSaved[k])) diff[k] = currentSaved[k]
+        })
+        return diff
+    }
+
+    // show popup if there's unsaved changes
+    function checkUnsavedChanges() {
+        if (!lastSavedData) return
+        if (hasUnsavedChanges()) $('#unsavedWarning').addClass('activeWarning')
+        else $('#unsavedWarning').removeClass('activeWarning')
+    }
+
+    function validateEmbedJSON() {
+        try { 
+            let jsonTest = JSON.parse($('#lvlUpEmbed').val()).embeds[0]
+            if (Array.isArray(jsonTest) || typeof jsonTest != "object") return false
+            else return true
+        }
+        catch(e) { return false }
+    }
+
+    $('[saveName]').change(checkUnsavedChanges)
+
+    $(document).on("input blur", 'input[type=number], .numberinput', function(e) {
+        
+        let isInput = e.target.nodeName == "INPUT"
+        let rawVal = isInput ? $(this).val() : $(this).text()
+        let val = Number(rawVal)
+        let min = Number($(this).attr('min'))
+        let max = Number($(this).attr('max'))
+        let dec = Number($(this).attr('decimals') || 0)
+        let def = Number($(this).attr('default'))
+        let cleanVal = val
+
+        if (!rawVal.length) cleanVal = isNaN(def) ? "" : def
+        else if (!isNaN(min) && val < min) cleanVal = min
+        else if (!isNaN(max) && val > max) cleanVal = max 
+
+        if (e.type == "input" && cleanVal != val) $(this).addClass('red')
+        else $(this).removeClass('red')
+
+        if (e.type != "input") {
+            if (isNaN(def) && cleanVal === "") return
+            let rounded = +cleanVal.toFixed(dec)
+            isInput ? $(this).val(rounded) : $(this).text(rounded)
+        }
+    })
+
+    $(document).on("input blur", 'input[type=checkbox][linked]', function(e) {
+        let link = $(this).attr('linked')
+        let checked = $(this).prop('checked')
+        $(`input[type=checkbox][linked=${link}]`).prop('checked', false)
+        if (checked) $(this).prop('checked', true)
+    })
+
+
+    let requestInProgress = false
+
+    $('#saveChanges').click(function() {
+        if (requestInProgress || $('#unsavedWarning.activeWarning').length < 1) return
+        let lvlEmbedEnabled = $('#toggleLvlUpEmbed').prop('checked')
+        if (lvlEmbedEnabled && !validateEmbedJSON()) return alert("Invalid level up embed data! Please fix it or remove it before saving.")
+        else requestInProgress = true
+        $('#saveChanges').html("...")
+        let savejson = compareSaveJSON()
+        if (savejson["levelUp.message"] && !savejson["levelUp.embed"]) savejson["levelUp.embed"] = lvlEmbedEnabled
+        $.ajax({
+            url: "/api/settings", type: "post",
+            data: JSON.stringify(Object.assign(savejson, {guildID})),
+            headers: { 'Content-Type': 'application/json'}
+        })
+        .done(function(res) {
+            requestInProgress = false
+            $('#saveChanges').html("Save")
+            let newSave = generateSaveJSON()
+            lastUpdated = Date.now()
+            updateHomeInfo(newSave)
+            lastSavedData = JSON.stringify(newSave)
+            $('#unsavedWarning').removeClass('activeWarning')
+        })
+        .fail(function (e) {
+            requestInProgress = false
+            $('#saveChanges').html("Save")
+            alert(`Error! ${e.responseText}`);
+            console.error(e)
+        })
+    })
+
+    $('#resetSettings').click(function() {
+        if (requestInProgress) return
+        else if (!confirm("Last chance! Are you sure you want to reset all settings?")) return
+        requestInProgress = true
+        $.ajax({
+            url: "/api/settings", type: "post",
+            data: JSON.stringify({guildID, resetSettings: true}),
+            headers: { 'Content-Type': 'application/json'}
+        })
+        .done(function(res) {
+            requestInProgress = false
+            window.location.reload()
+        })
+        .fail(function (e) {
+            requestInProgress = false
+            alert(`Error! ${e.responseText}`);
+            console.error(e)
+        })
+    })
+
+    $('#resetXP').click(function() {
+        if (requestInProgress) return
+        else if (!confirm("This is seriously your last chance!!! Reset everyone's XP?")) return
+        requestInProgress = true
+        $.ajax({
+            url: "/api/settings", type: "post",
+            data: JSON.stringify({guildID, resetXP: true}),
+            headers: { 'Content-Type': 'application/json'}
+        })
+        .done(function(res) {
+            requestInProgress = false
+            alert("All XP has been reset!")
+            $('.confirmReset').hide()
+            $('.confirmConfirmReset').hide()
+        })
+        .fail(function (e) {
+            requestInProgress = false
+            alert(`Error! ${e.responseText}`);
+            console.error(e)
+        })
+    })
+
+    $('.exportXP').click(function() {
+        if (requestInProgress) return
+        else requestInProgress = true
+        let format = $(this).attr("format")
+
+        fetch(`/api/xp/${guildID}?format=${format}`).then(res => {
+            if (!res.ok) {
+                requestInProgress = false
+                return res.json().then(e => { alert(`Error! ${e.message}`); }).catch(() => { alert("Error!") })
+            }
+            requestInProgress = false
+            res.blob().then(blob => {
+                let downloader = document.createElement('a');
+                downloader.href = URL.createObjectURL(blob)
+                downloader.dataset.downloadurl = ['text/txt', downloader.download, downloader.href].join(':');
+                downloader.style.display = "none"; downloader.download = `${serverName}.${format == "everything" ? "json" : format}`
+                downloader.target = "_blank"; document.body.appendChild(downloader);
+                downloader.click(); document.body.removeChild(downloader);
+            })
+        }).catch((e) => {
+            requestInProgress = false
+            alert(`Error! ${e.responseText}`);
+            console.error(e)
+        })
+    })
+
+    $('#sendExample').click(function() {
+        if (requestInProgress) return
+
+        let exampleLevel = Number($('#exampleLevel').val())
+        let saveData = generateSaveJSON()
+        let embedMode = saveData['levelUp.embed']
+        if (embedMode && !validateEmbedJSON()) return alert("Invalid level up embed data! Please fix it or remove it before testing.")
+        else if (!saveData['levelUp.message']) return
+        else requestInProgress = true
+        
+        $('.exampleP').hide()
+        $('#sendingExample').show()
+
+        $('#sendExample').prop('disabled', true)
+        $.ajax({
+            url: "/api/sendexample", type: "post",
+            data: JSON.stringify({guildID, embed: embedMode, level: exampleLevel || undefined, message: saveData['levelUp.message']}),
+            headers: { 'Content-Type': 'application/json'}
+        })
+        .done(function(res) {
+            requestInProgress = false
+            setTimeout(() => { $('#sendExample').prop('disabled', false) }, 3000);
+            $('#sendingExample').hide()
+            $('#exampleSent').show()
+        })
+        .fail(function (e) {
+            requestInProgress = false
+            setTimeout(() => { $('#sendExample').prop('disabled', false) }, 3000);
+            $('#sendingExample').hide()
+            $('#exampleError').show()
+            console.error(e)
+        })
+    })
+
+    $('#confirmPrune').click(function() {
+        if (requestInProgress) return
+        let amt = Number($('#prune_amt').val())
+        if (amt <= 0) return
+
+        $('#confirmPrune').prop('disabled', true)
+
+        requestInProgress = true
+
+        $.ajax({
+            url: "/api/pruneMembers", type: "post",
+            data: JSON.stringify({guildID, amount: amt}),
+            headers: { 'Content-Type': 'application/json'}
+        })
+        .done(function(res) {
+            requestInProgress = false
+            setTimeout(() => { $('#confirmPrune').prop('disabled', false) }, 1000);
+
+            if (res.matches < 1) return alert(`Nobody in your server has less than ${amt} XP!`)
+
+            if (confirm(`Are you sure you want to prune? This will wipe ${commafy(res.matches)} user${res.matches == 1 ? "" : "s"}, leaving ${commafy(res.total - res.matches)} left.`)) {
+                
+                requestInProgress = true
+
+                $.ajax({
+                    url: "/api/pruneMembers", type: "post",
+                    data: JSON.stringify({guildID, amount: amt, confirmPrune: "hell yes"}),
+                    headers: { 'Content-Type': 'application/json'}
+                })
+                .done(function(res) {
+                    requestInProgress = false
+                    return alert(res)
+                })
+                .fail(function (e) {
+                    requestInProgress = false
+                    alert("Something went wrong while trying to prune!\n" + e.message)
+                    console.error(e)
+                })
+
+            }
+        })
+        .fail(function (e) {
+            requestInProgress = false
+            setTimeout(() => { $('#confirmPrune').prop('disabled', false) }, 1000);
+            alert("Something went wrong checking the prune count!\n" + e.message)
+            console.error(e)
+        })
+    })
+
+    function readJSONFile(file) {
+        return new Promise((res, rej) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+                try {
+                    const parsed = JSON.parse(reader.result)
+                    res(parsed)
+                }
+                catch(e) { rej(e) }
+            }
+            reader.onerror = () => rej(reader.error)
+            reader.readAsText(file)
+        })
+    }
+
+    let failedImports = []
+    $('#confirmBotImport').click(async function() {
+        if (requestInProgress) return
+
+        if (hasUnsavedChanges()) return alert("Please save your unsaved changes first!")
+
+        let botName = $('#importfrom').find(":selected").text().split("(")[0].trim()
+        let importBot = $('#importfrom').val()
+        let importGroup = $(`.importdiv[importtype='${importBot}']`)
+
+        let jsonData;
+        if (importBot == "json") {
+            let jsonfile = $('#importJSONFile').prop('files')[0]
+            if (!jsonfile) return alert("No .json file has been uploaded!")
+            jsonData = await readJSONFile(jsonfile).catch(() => null)
+            if (!jsonData) return alert("Could not parse that file! Are you sure it's a valid .json file?")
+            if (Array.isArray(jsonData) && jsonData[0] && jsonData[0].xp && !confirm("This .json file only contains XP data - no settings will be modified. Are you cool with that?")) return
+        }
+
+        if (!importGroup.length) return alert("Invalid bot??!")
+        if (failedImports.includes(importBot)) return alert(`You already tried to import from ${botName}, and it failed! Please wait 30 seconds since the last attempt before trying again.`)
+
+        let importSettings = { bot: importBot }
+        importGroup.find('.importSetting').each(function() {
+            importSettings[$(this).attr("option")] = $(this).attr("type") == "checkbox" ? $(this).prop("checked") : $(this).val()
+        })
+
+        if (!importSettings.xp && (!importSettings.settings && !importSettings.rewardroles)) return alert("Please import either XP or settings!")
+
+        requestInProgress = true
+        $('#botimporting').hide()
+        $('#botimportloading').show()
+
+        const importData = {guildID, import: importSettings}
+        if (jsonData) importData.jsonData = jsonData
+
+        $.ajax({
+            url: "/api/importfrombot", type: "post",
+            data: JSON.stringify(importData),
+            headers: { 'Content-Type': 'application/json'}
+        })
+        .done(function(res) {
+            $('#botimportloading').hide()
+            alert(res)
+            window.location.reload()
+        })
+        .fail(function (e) {
+            $('#botimporting').show()
+            $('#botimportloading').hide()
+            requestInProgress = false
+            if (e.responseJSON && e.responseJSON.apiError) {
+                let isJSON = (importBot == "json")
+                if (e.responseJSON.code == "noData") alert(isJSON ? "No server or XP data was found!" : "This server doesn't have any data!")
+                else alert("Error while trying to import data!\n" + e.responseJSON.message)  
+                if (e.responseJSON.code != "importCooldown" && e.responseJSON.code != "invalidImport") {
+                    if (!isJSON) failedImports.push(importBot)
+                    setTimeout(() => {
+                        failedImports = failedImports.filter(x => x != importBot)
+                    }, 30 * 1000);
+                }
+            }
+            else {
+                alert("Error while trying to import data!\n" + e.message)  
+            }
+            console.error(e)
+        })
+    })
+
+</script>
+
+</html>

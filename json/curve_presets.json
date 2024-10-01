@@ -1,0 +1,106 @@
+{
+    "presets": [
+        {
+            "name": "Polaris (Default)",
+            "desc": "The default and recommended curve. Decently balanced.",
+            "curve": { "3": 1,      "2": 50,        "1": 100 },
+            "round": 100,
+            "bestRange": [50, 100]
+        },
+
+        {
+            "name": "RoboTop",
+            "desc": "The curve used by RoboTop, the predecessor to Polaris. Starts fine, but gets absurdly difficult.",
+            "curve": { "3": 5,      "2": 100,        "1": 150 },
+            "round": 100,
+            "bestRange": [50, 100]
+        },
+
+        {
+            "name": "Generous",
+            "desc": "Too hard to level up? This curve is a little more on the friendly side.",
+            "curve": { "3": 0.5,      "2": 20,        "1": 50 },
+            "round": 50,
+            "bestRange": [50, 100]
+        },
+
+        {
+            "name": "Linear",
+            "desc": "Completely linear. Set XP per message to 100-100 to level up exactly every 100 messages.",
+            "curve": { "3": 0,      "2": 0,     "1": 10000 },
+            "round": 1,
+            "bestRange": [100, 100]
+        },
+
+        {
+            "name": "Exponential",
+            "desc": "Not too easy, not too difficult. And it scales really smoothly.",
+            "curve": { "3": 0,      "2": 250,     "1": 0 },
+            "round": 1,
+            "bestRange": [50, 100]
+        },
+
+        {
+            "name": "Minimalist",
+            "desc": "1-10 XP per message. Why not?.",
+            "curve": { "3": 1,      "2": 2,     "1": 3 },
+            "round": 10,
+            "bestRange": [1, 10]
+        },
+
+        {
+            "name": "Ultra Minimalist",
+            "desc": "1 XP per message, level up every 100 messages. Alternatively, I also recommend a 12 hour cooldown where you level up every 10 messages!",
+            "curve": { "3": 0,      "2": 0,     "1": 100 },
+            "round": 1,
+            "bestRange": [1, 1]
+        },
+        
+        {
+            "name": "Minecraft",
+            "desc": "Minecraft's XP curve changes a bit depending on your level, but this is the curve from level 0-15. Close enough. I recommend 3-11 XP per message, which is how much a Bottle o' Enchanting grants.",
+            "curve": { "3": 0,      "2": 1,     "1": 6 },
+            "round": 1,
+            "bestRange": [3, 11]
+        },
+
+        {
+            "name": "Arcane",
+            "desc": "What a mysterious curve that definitely doesn't come from another bot!",
+            "curve": { "3": 0,      "2": 50,      "1": 25 },
+            "round": 5,
+            "bestRange": [15, 40]
+        },
+
+        {
+            "name": "Definitely not Mee6",
+            "desc": "I can assure you that this oddly specific curve was not lifted from that one bot people don't like. Also last time I checked, you can't own a cubic function.",
+            "curve": { "3": 1.6666666667,      "2": 22.5,      "1": 75.8333333333 },
+            "round": 5,
+            "bestRange": [15, 25]
+        }
+    ],
+
+    "difficultyRatings": {
+        "0": "Linear",
+        "1": "Basically linear",
+        "25": "Almost no scaling",
+        "50": "Extremely generous",
+        "100": "Very generous",
+        "225": "Generous",
+        "350": "Slightly generous",
+        "500": "Normal",
+        "1000": "Slightly spicy",
+        "1500": "Moderately spicy",
+        "2000": "Spicy",
+        "2500": "Very spicy",
+        "3250": "Extremely spicy",
+        "4000": "Dangerously spicy",
+        "5000": "Insanely spicy",
+        "6500": "Brutal",
+        "10000": "Extremely brutal",
+        "20000": "What the actual heck",
+        "35000": "Are you out of your mind",
+        "50000": "AAAAAAAAAAAAAAAAAAAAAAA"
+    }
+}
