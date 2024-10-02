@@ -76,7 +76,7 @@ async run(client, int, tools) {
 
     let isPublic = int && !!int.options.get("global")?.value
     let undeploy = int && !!int.options.get("undeploy")?.value
-    let targetServer = isPublic ? null : int.options.get("server_id")?.value
+    let targetServer = (!int || isPublic) ? null : int.options.get("server_id")?.value
 
     let interactionList = []
     if (!undeploy) client.commands.forEach(cmd => {
