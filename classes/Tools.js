@@ -205,7 +205,7 @@ class Tools {
             if (options.author) embed.setAuthor(typeof options.author == "string" ? {name: options.author, iconURL: int.member.displayAvatarURL()} : options.author)
             if (options.footer) embed.setFooter(typeof options.footer == "string" ? {text: options.footer} : options.footer)
             if (options.fields) embed.addFields(options.fields)
-            if (options.timestamp) embed.setTimestamp()
+            if (options.timestamp) embed.setTimestamp(options.timestamp)
             return embed
         }
 
