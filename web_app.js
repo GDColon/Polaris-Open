@@ -505,10 +505,10 @@ app.post("/api/importfrombot", async function(req, res) {
     let isDev = tools.isDev(user)
 
     let foundGuild = guilds.find(x => x.id == guildID)
-    if (!foundGuild && isDev) return res.apiError("Not in server!")
+    if (!foundGuild && !isDev) return res.apiError("Not in server!")
 
     let canManage = canManageServer(foundGuild)
-    if (!canManage && isDev) return res.apiError("Manage server permission required!")
+    if (!canManage && !isDev) return res.apiError("Manage server permission required!")
 
     let importSettings = req.body.import || {}
     let bot = importSettings.bot
